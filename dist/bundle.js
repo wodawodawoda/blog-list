@@ -13997,45 +13997,129 @@ var _backbone = require('backbone/backbone.js');
 
 var _backbone2 = _interopRequireDefault(_backbone);
 
+var _models = require('./models.js');
+
+var models = _interopRequireWildcard(_models);
+
+var _views = require('./views.js');
+
+var views = _interopRequireWildcard(_views);
+
+var _collectionsInstances = require('./collectionsInstances.js');
+
+var collections = _interopRequireWildcard(_collectionsInstances);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Backbone Models
-var Blog = _backbone2.default.Model.extend({
+// View instance
+
+
+// Views
+var blogsView = new views.BlogsView();
+
+// DOM events handlers
+
+
+// Models
+$(document).ready(function () {
+	$('.add-blog').on('click', function (e) {
+		e.preventDefault();
+		var blog = new models.Blog({
+			author: $('.author-input').val(),
+			title: $('.title-input').val(),
+			url: $('.url-input').val()
+		});
+		collections.blogs.add(blog);
+	});
+});
+
+},{"./collectionsInstances.js":6,"./models.js":7,"./views.js":8,"backbone/backbone.js":1,"underscore":3}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Blogs = undefined;
+
+var _backbone = require('backbone');
+
+var _backbone2 = _interopRequireDefault(_backbone);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Blogs = exports.Blogs = _backbone2.default.Collection.extend({}); // Backbone Collections
+
+},{"backbone":1}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.blogs = undefined;
+
+var _collections = require('./collections.js');
+
+var collections = _interopRequireWildcard(_collections);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var blogs = exports.blogs = new collections.Blogs(); // Collection instances
+
+},{"./collections.js":5}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.Blog = undefined;
+
+var _backbone = require('backbone');
+
+var _backbone2 = _interopRequireDefault(_backbone);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Blog = exports.Blog = _backbone2.default.Model.extend({
 	default: {
 		author: '',
 		title: '',
 		url: ''
 	}
+}); // Backbone Models
+
+},{"backbone":1}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
 });
+exports.BlogsView = exports.BlogView = undefined;
 
-// Backbone Collections
-var Blogs = _backbone2.default.Collection.extend({});
+var _backbone = require('backbone');
 
-// Blog model instances
-// const blog1 = new Blog({
-// 	author: 'Andrzej',
-// 	title: 'Andrzejs blog',
-// 	url: 'http://andrzej.pl',
-// })
-//
-// const blog2 = new Blog({
-// 	author: 'Janusz',
-// 	title: 'Januszs blog',
-// 	url: 'http://janusz.pl',
-// })
-//
-// const blog3 = new Blog({
-// 	author: 'Janusz',
-// 	title: 'Januszs blog',
-// 	url: 'http://janusz.pl',
-// })
+var _backbone2 = _interopRequireDefault(_backbone);
 
-// Collection instances
-var blogs = new Blogs();
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _models = require('./models');
+
+var models = _interopRequireWildcard(_models);
+
+var _collectionsInstances = require('./collectionsInstances.js');
+
+var collections = _interopRequireWildcard(_collectionsInstances);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Views Backbone
-var BlogView = _backbone2.default.View.extend({
-	model: new Blog(),
+var BlogView = exports.BlogView = _backbone2.default.View.extend({
+	model: new models.Blog(),
 	tagName: 'tr',
 	initialize: function initialize() {
 		console.log({ self: this });
@@ -14078,8 +14162,9 @@ var BlogView = _backbone2.default.View.extend({
 	}
 });
 
-var BlogsView = _backbone2.default.View.extend({
-	model: blogs,
+// Collections
+var BlogsView = exports.BlogsView = _backbone2.default.View.extend({
+	model: collections.blogs,
 	el: $('.blogs-list'),
 	initialize: function initialize() {
 		this.model.on('add', this.render, this);
@@ -14096,22 +14181,7 @@ var BlogsView = _backbone2.default.View.extend({
 		return this;
 	}
 });
-// View instance
-var blogsView = new BlogsView();
 
-// DOM events handlers
-$(document).ready(function () {
-	$('.add-blog').on('click', function (e) {
-		e.preventDefault();
-		var blog = new Blog({
-			author: $('.author-input').val(),
-			title: $('.title-input').val(),
-			url: $('.url-input').val()
-		});
-		blogs.add(blog);
-	});
-});
-
-},{"backbone/backbone.js":1,"underscore":3}]},{},[4])
+},{"./collectionsInstances.js":6,"./models":7,"backbone":1,"underscore":3}]},{},[4])
 
 //# sourceMappingURL=bundle.js.map
