@@ -36,12 +36,28 @@ export const BlogView = Backbone.View.extend({
 			title: $('.title-update').val(),
 			url: $('.url-update').val(),
 		})
+
+		this.model.save(null, {
+			success: res => {
+				console.log(`Successfully UPDATED blog with _id: ${res.toJSON()._id}`)
+			},
+			error: res => {
+				console.log('Failed to update blog!')
+			}
+		})
 	},
 	cancel: function () {
 		this.render()
 	},
 	delete: function () {
-		this.model.destroy()
+		this.model.destroy({
+			success: res => {
+				console.log(`Successfully DELETED blog with _id: ${res.toJSON()._id}`)
+			},
+			error: () => {
+				console.log('Failed to DELETE blog')
+			}
+		})
 	},
 
 	render: function () {
@@ -59,6 +75,13 @@ export const BlogsView = Backbone.View.extend({
 		this.model.on('add', this.render, this);
 		this.model.on('change', this.render, this);
 		this.model.on('remove', this.render, this);
+
+		this.model.fetch({
+			success: res => {
+				res.toJSON().forEach(item => console.log(`Successfully GET blog with _id: ${item._id}`))
+			},
+			error: () => console.log('Failed to GET blogs!')
+		})
 	},
 	render: function () {
 		this.$el.html('');

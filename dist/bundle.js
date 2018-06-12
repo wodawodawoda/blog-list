@@ -13989,14 +13989,6 @@ return jQuery;
 },{}],4:[function(require,module,exports){
 'use strict';
 
-var _underscore = require('underscore');
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _backbone = require('backbone/backbone.js');
-
-var _backbone2 = _interopRequireDefault(_backbone);
-
 var _models = require('./models.js');
 
 var models = _interopRequireWildcard(_models);
@@ -14011,8 +14003,6 @@ var collections = _interopRequireWildcard(_collectionsInstances);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 // View instance
 
 
@@ -14020,8 +14010,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var blogsView = new views.BlogsView();
 
 // DOM events handlers
-
-
 // Models
 $(document).ready(function () {
 	$('.add-blog').on('click', function (e) {
@@ -14032,14 +14020,23 @@ $(document).ready(function () {
 			url: $('.url-input').val()
 		});
 		collections.blogs.add(blog);
+
+		blog.save(null, {
+			success: function success(res) {
+				console.log('Successfully saved blog with _id: ' + res.toJSON()._id + '!');
+			},
+			error: function error() {
+				console.log('Failed to save blog!');
+			}
+		});
 	});
 });
 
-},{"./collectionsInstances.js":6,"./models.js":7,"./views.js":8,"backbone/backbone.js":1,"underscore":3}],5:[function(require,module,exports){
+},{"./collectionsInstances.js":6,"./models.js":7,"./views.js":8}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 exports.Blogs = undefined;
 
@@ -14049,7 +14046,9 @@ var _backbone2 = _interopRequireDefault(_backbone);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Blogs = exports.Blogs = _backbone2.default.Collection.extend({}); // Backbone Collections
+var Blogs = exports.Blogs = _backbone2.default.Collection.extend({
+	url: 'http://localhost:5000/api/blogs'
+}); // Backbone Collections
 
 },{"backbone":1}],6:[function(require,module,exports){
 'use strict';
@@ -14081,13 +14080,14 @@ var _backbone2 = _interopRequireDefault(_backbone);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+_backbone2.default.Model.prototype.idAttribute = '_id'; // Backbone Models
 var Blog = exports.Blog = _backbone2.default.Model.extend({
 	default: {
 		author: '',
 		title: '',
 		url: ''
 	}
-}); // Backbone Models
+});
 
 },{"backbone":1}],8:[function(require,module,exports){
 'use strict';
@@ -14148,12 +14148,28 @@ var BlogView = exports.BlogView = _backbone2.default.View.extend({
 			title: $('.title-update').val(),
 			url: $('.url-update').val()
 		});
+
+		this.model.save(null, {
+			success: function success(res) {
+				console.log('Successfully UPDATED blog with _id: ' + res.toJSON()._id);
+			},
+			error: function error(res) {
+				console.log('Failed to update blog!');
+			}
+		});
 	},
 	cancel: function cancel() {
 		this.render();
 	},
 	delete: function _delete() {
-		this.model.destroy();
+		this.model.destroy({
+			success: function success(res) {
+				console.log('Successfully DELETED blog with _id: ' + res.toJSON()._id);
+			},
+			error: function error() {
+				console.log('Failed to DELETE blog');
+			}
+		});
 	},
 
 	render: function render() {
@@ -14170,6 +14186,17 @@ var BlogsView = exports.BlogsView = _backbone2.default.View.extend({
 		this.model.on('add', this.render, this);
 		this.model.on('change', this.render, this);
 		this.model.on('remove', this.render, this);
+
+		this.model.fetch({
+			success: function success(res) {
+				res.toJSON().forEach(function (item) {
+					return console.log('Successfully GET blog with _id: ' + item._id);
+				});
+			},
+			error: function error() {
+				return console.log('Failed to GET blogs!');
+			}
+		});
 	},
 	render: function render() {
 		var _this = this;

@@ -1,6 +1,3 @@
-import _ from 'underscore'
-import Backbone from 'backbone/backbone.js'
-
 // Models
 import * as models from './models.js'
 
@@ -23,5 +20,14 @@ $(document).ready(function () {
 			url: $('.url-input').val(),
 		})
 		collections.blogs.add(blog)
+
+		blog.save(null, {
+			success: res => {
+				console.log(`Successfully saved blog with _id: ${res.toJSON()._id}!`)
+			},
+			error: () => {
+				console.log('Failed to save blog!')
+			}
+		})
 	})
 })
